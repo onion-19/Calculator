@@ -1,7 +1,7 @@
 package edu.calculator.entity;
 
 public class TypeSelector {
-    private int type = -1; //命令行输入的范围参数的类型  -1表示用户未指定数值范围的情况
+    private int type = -1; //命令行输入的范围参数的类型  -1表示用户未指定数值范围的情况 0表示真分数分母的上限 1表示自然数的上限
     //-r 10   ->不包括10
     private int range;
 
@@ -23,6 +23,7 @@ public class TypeSelector {
     }
 
     public void setRange(int range) {
-        this.range = range - 1; //range等于用户输入的范围减1
+//        this.range = range - 1; //range等于用户输入的范围减1
+        this.range = range;
     }
 }

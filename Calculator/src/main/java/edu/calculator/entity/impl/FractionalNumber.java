@@ -5,10 +5,13 @@ import edu.calculator.entity.NumberType;
 public class FractionalNumber implements NumberType {
     private int numerator;//分子
     private int denominator;//分母
-    private int integer = 0; //答案的整数部分
+
+//    private int integer = 0; //答案的整数部分
+    private int integer; //答案的整数部分
     public FractionalNumber(int numerator, int denominator) {
         this.numerator = numerator;
         this.denominator = denominator;
+        this.integer = 0;
     }
     public FractionalNumber(int numerator, int denominator, int integer) {
         this.numerator = numerator;
@@ -18,9 +21,9 @@ public class FractionalNumber implements NumberType {
     public void setInteger(int integer) {
         this.integer = integer;
     }
-//    public void setNumerator(int numerator) {
-//        this.numerator = numerator;
-//    }
+    public void setNumerator(int numerator) {
+        this.numerator = numerator;
+    }
 //    public void setDenominator(int denominator) {
 //        this.denominator = denominator;
 //    }
@@ -48,7 +51,7 @@ public class FractionalNumber implements NumberType {
 
     @Override
     public boolean isLess(NumberType num) {
-        if(num.getNum() != -1) { //num是整数，比较当前分数的整数部分和num的大小
+        if(num.isInteger()) { //num是整数，比较当前分数的整数部分和num的大小
             return this.integer < num.getNum();
         } else if(this.integer < num.getInteger()){ //num是分数，比较当前分数的整数部分和num的整数部分的大小
             return true;

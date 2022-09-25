@@ -1,6 +1,7 @@
 package edu.calculator.test;
 
 import edu.calculator.entity.TypeSelector;
+import edu.calculator.utils.FileOperator;
 import edu.calculator.utils.Generator;
 import org.junit.Test;
 
@@ -17,6 +18,8 @@ public class TestUnit {
         System.out.println(SymbolType.MUL.ordinal());
         System.out.println(type);
         System.out.println(type.ordinal());
+        type = SymbolType.values()[2];
+        System.out.println(type);
     }
     @Test
     public void testDouble() {
@@ -44,4 +47,12 @@ public class TestUnit {
             System.out.println(rand.nextInt(2) + 2);
         }
     }
+    @Test
+    public void testWriteFile() {
+        Generator generator = new Generator();
+        List<String> list = generator.exercisesGenerator(new TypeSelector(0, 100), 100);
+        List<String> ansList = generator.getAnswersList();
+        FileOperator.writeFile(list, ansList);
+    }
+
 }

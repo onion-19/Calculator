@@ -31,7 +31,7 @@ public class IntegralNumber implements NumberType {
     }
     @Override
     public boolean isLess(NumberType num) {
-        if(num.getNum() != -1) { //num是整数
+        if(num.isInteger()) { //num是整数
             return this.num < num.getNum();
         } else if(this.num < num.getInteger()) { //num是分数且num的整数部分大于当前整数
             return true;

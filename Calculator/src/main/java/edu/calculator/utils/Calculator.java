@@ -40,6 +40,8 @@ public class Calculator {
             return new FractionalNumber(op2.getDenominator() - op2.getNumerator(),
                     op2.getDenominator(), op1.getNum() - op2.getInteger() - 1);
         } else if(!op1.isInteger() && op2.isInteger()) {
+            if(op2.getNum() == 0)
+                return op1;
             return new FractionalNumber(op1.getDenominator() - op1.getNumerator(),
                     op1.getDenominator(), op2.getNum() - op1.getInteger() - 1);
         }
@@ -95,6 +97,8 @@ public class Calculator {
         return new FractionalNumber((n % d) / gcd, d / gcd, n / d);
     }
     public static NumberType divCalculate(NumberType op1, NumberType op2) {
+        if(op1.getNum() == 0)
+            return op1;
         if(op1.isInteger() && op2.isInteger()) {
             int gcd = getGreatestCommonDivisor(op1.getNum(), op2.getNum());
             return new FractionalNumber(op1.getNum() / gcd, op2.getNum() / gcd);

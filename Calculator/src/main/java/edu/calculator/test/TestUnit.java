@@ -1,6 +1,11 @@
 package edu.calculator.test;
 
+import edu.calculator.entity.TypeSelector;
+import edu.calculator.utils.Generator;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Random;
 
 public class TestUnit {
     private enum SymbolType {
@@ -22,5 +27,21 @@ public class TestUnit {
         System.out.println(((double)10 / (double)3));
         System.out.println(((double)100 / (double)33));
         System.out.println(((double)100 / (double)34));
+    }
+    @Test
+    public void testExercisesGenerate() {//75、54
+        Generator generator = new Generator();
+        List<String> list = generator.exercisesGenerator(new TypeSelector(0, 100), 100);
+        List<String> ansList = generator.getAnswersList();
+        list.forEach(System.out::println);
+        System.out.println("\nanswers：");
+        ansList.forEach(System.out::println);
+    }
+    @Test
+    public void testRandom() {
+        Random rand = new Random(System.currentTimeMillis());
+        for(int i = 0; i < 50; i++) {
+            System.out.println(rand.nextInt(2) + 2);
+        }
     }
 }

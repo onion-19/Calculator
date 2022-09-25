@@ -10,9 +10,20 @@ public class FractionalNumber implements NumberType {
         this.numerator = numerator;
         this.denominator = denominator;
     }
+    public FractionalNumber(int numerator, int denominator, int integer) {
+        this.numerator = numerator;
+        this.denominator = denominator;
+        this.integer = integer;
+    }
     public void setInteger(int integer) {
         this.integer = integer;
     }
+//    public void setNumerator(int numerator) {
+//        this.numerator = numerator;
+//    }
+//    public void setDenominator(int denominator) {
+//        this.denominator = denominator;
+//    }
 
     @Override
     public int getNumerator() {

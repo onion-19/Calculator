@@ -31,12 +31,12 @@ public class Generator {
         String str = "";
         while(0 != sum--) { //一次循环生成一道题
             //生成一道题的操作数个数 2或3
-            numCount = rand.nextInt(1) + 2;
+            numCount = rand.nextInt(2) + 2;
             //生成两个操作数
             op1 = numGenerator(type, rand);
             op2 = numGenerator(type, rand);
             //生成第一个符号
-            symbolType = SymbolType.values()[rand.nextInt(3)];
+            symbolType = SymbolType.values()[rand.nextInt(4)];
             //判断二元运算是否重复，并维护哈希表
             while(isDuplicate(op1, op2, symbolType)) {
                 op2 = numGenerator(type, rand);
@@ -132,7 +132,7 @@ public class Generator {
         return new FractionalNumber(numerator, denominator);
     }
     /**
-     * 判断运算是否符合规定（被减数大于等于减数、被除数小于除数）
+     * 判断运算是否符合规定（被减数大于等于减数、被除数小于除数）（加法、乘法是否溢出）
      * @param op1 左操作数
      * @param op2 右操作数
      * @param symbolType 符号类型
@@ -141,17 +141,43 @@ public class Generator {
     private boolean isCompliant(NumberType op1, NumberType op2, SymbolType symbolType) {
         switch (symbolType) {
             case ADD:
-
-                break;
+//                if(op1.isInteger() && op2.isInteger()) {
+//                } else if(op1.isInteger() && !op2.isInteger()) {
+//                } else if(!op1.isInteger() && op2.isInteger()) {
+//                } else {
+//                }
+                try {
+                    Math.addExact(op1.getNum(), op2.getNum());
+                    Math.addExact(op1.getNum(), op2.getInteger());
+                    Math.addExact(op1.getInteger(), op2.getNum());
+                    Math.addExact(op1.getNumerator(), op2.getNumerator());
+                    Math.addExact(op1.getDenominator(), op2.getDenominator());
+                } catch(ArithmeticException e) {
+                    return false;
+                }
+                return true;
             case SUB:
-
-                break;
+                if(op1.isLess(op2)) {
+                    return false;
+                }
+                return true;
             case MUL:
-
-                break;
+                try {
+                    Math.multiplyExact(op1.getNum(), op2.getNum());
+                    Math.multiplyExact(op1.getNum(), op2.getInteger());
+                    Math.multiplyExact(op1.getInteger(), op2.getNum());
+                    Math.multiplyExact(op1.getNumerator(), op2.getNumerator());
+                    Math.multiplyExact(op1.getDenominator(), op2.getDenominator());
+                } catch(ArithmeticException e) {
+                    return false;
+                }
+                return true;
             default:
+                if(op1.isLess(op2)) {
+                    return true;
+                }
+                return false;
         }
-        return true;
     }
     private NumberType calculatorChooser(NumberType op1, NumberType op2, SymbolType symbolType) {
         switch (symbolType) {

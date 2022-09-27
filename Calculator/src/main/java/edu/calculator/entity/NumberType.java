@@ -8,6 +8,7 @@ public interface NumberType {
     public int getNumerator();
     public int getDenominator();
     public int getInteger();
-
     public int getNum();
+
+    public void setInteger(int integer);
 }

@@ -39,25 +39,40 @@ public class Calculator {
         } else if(op1.isInteger() && !op2.isInteger()) {
             return new FractionalNumber(op2.getDenominator() - op2.getNumerator(),
                     op2.getDenominator(), op1.getNum() - op2.getInteger() - 1);
-        } else if(!op1.isInteger() && op2.isInteger()) {
+        } else if(!op1.isInteger() && op2.isInteger()) { //分数减整数
             if(op2.getNum() == 0)
                 return op1;
-            return new FractionalNumber(op1.getDenominator() - op1.getNumerator(),
-                    op1.getDenominator(), op2.getNum() - op1.getInteger() - 1);
+//            return new FractionalNumber(op1.getDenominator() - op1.getNumerator(),
+//                    op1.getDenominator(), op2.getNum() - op1.getInteger() - 1);
+            return new FractionalNumber(op1.getNumerator(), op1.getDenominator(), op1.getInteger() - op2.getNum());
         }
         //两个分数相减
         //1）求两个分母的最小公倍数，两个分子分别乘以最小公倍数
         int lcm = getLeastCommonMultiple(op1.getDenominator(), op2.getDenominator());
-        int preN1 = op1.getNumerator() * lcm + op1.getInteger() * op1.getDenominator();
-        int preN2 = op2.getNumerator() * lcm + op2.getInteger() * op2.getDenominator();
+//        int preN1 = op1.getNumerator() * lcm + op1.getInteger() * op1.getDenominator();
+//        int preN2 = op2.getNumerator() * lcm + op2.getInteger() * op2.getDenominator();
+//        int preN1 = (op1.getNumerator() + op1.getInteger() * op1.getDenominator()) * lcm;
+//        int preN2 = (op2.getNumerator() + op2.getInteger() * op2.getDenominator()) * lcm;
+//        int preN1 = op1.getNumerator() * lcm;
+//        int preN2 = op2.getNumerator() * lcm;
+        int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
+        int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
         //2）求两个分子（乘以最小公倍数之后）之差与最小公倍数之间的最大公约数
+        if(preN1 - preN2 == 0) {
+            return new IntegralNumber(op1.getInteger() - op2.getInteger());
+        } else if(preN1 - preN2 < 0) {
+            op1.setInteger(op1.getInteger() - 1);
+            preN1 += lcm;
+        }
         int gcd = getGreatestCommonDivisor(preN1 - preN2, lcm);
         //3）如果相减后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
-        if((preN1 - preN2) % lcm == 0) {
-            return new IntegralNumber((preN1 - preN2) / lcm);
-        }
+//        if((preN1 - preN2) % lcm == 0) {
+//            return new IntegralNumber((preN1 - preN2) / lcm);
+//        }
+//        return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
+//                        (preN1 - preN2) / lcm);
         return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
-                        (preN1 - preN2) / lcm); //TODO
+                op1.getInteger() - op2.getInteger());
     }
     public static NumberType mulCalculate(NumberType op1, NumberType op2) {
         if(op1.isInteger() && op2.isInteger()) {
@@ -130,6 +145,8 @@ public class Calculator {
         return d1 * d2 / getGreatestCommonDivisor(d1, d2);
     }
     public static int getGreatestCommonDivisor(int m, int n) {
+        if(m == 0)
+            return n;
         int tmp;
         if(m < n) {// 保证 m >= n
             tmp = m;

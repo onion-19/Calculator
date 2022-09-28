@@ -19,8 +19,10 @@ public class Calculator {
         //两个分数相加（分数部分是真分数）
         //1）求两个分母的最小公倍数，两个分子分别乘以最小公倍数
         int lcm = getLeastCommonMultiple(op1.getDenominator(), op2.getDenominator());
-        int preN1 = op1.getNumerator() * lcm;
-        int preN2 = op2.getNumerator() * lcm;
+//        int preN1 = op1.getNumerator() * lcm;
+//        int preN2 = op2.getNumerator() * lcm;
+        int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
+        int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
         //2）求两个分子（乘以最小公倍数之后）之和与最小公倍数之间的最大公约数
         int gcd = getGreatestCommonDivisor(preN1 + preN2, lcm);
         //3）如果求和后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
@@ -103,12 +105,16 @@ public class Calculator {
                     op2.getNum() * op1.getInteger() + tmpInteger);
         }
         //两个分数相乘
-        int n = op1.getNumerator() * op2.getNumerator() +
-                op1.getInteger() * op2.getNumerator() +
-                op1.getNumerator() * op2.getInteger();
+//        int n = op1.getNumerator() * op2.getNumerator() +
+//                op1.getInteger() * op2.getNumerator() +
+//                op1.getNumerator() * op2.getInteger();
+        int n = (op1.getNumerator() + op1.getInteger() * op1.getDenominator()) *
+                (op2.getNumerator() + op2.getInteger() * op2.getDenominator());
         int d = op1.getDenominator() * op2.getDenominator();
         int gcd = getGreatestCommonDivisor((n % d), d);
-        //TODO
+        if(n % d == 0) {
+            return new IntegralNumber(n / d);
+        }
         return new FractionalNumber((n % d) / gcd, d / gcd, n / d);
     }
     public static NumberType divCalculate(NumberType op1, NumberType op2) {

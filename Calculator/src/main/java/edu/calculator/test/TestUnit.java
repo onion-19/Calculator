@@ -7,10 +7,12 @@ import edu.calculator.entity.impl.IntegralNumber;
 import edu.calculator.utils.Calculator;
 import edu.calculator.utils.FileOperator;
 import edu.calculator.utils.Generator;
+import edu.calculator.utils.Generator2;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -58,9 +60,9 @@ public class TestUnit {
 //        PropertyConfigurator.configure("log4j.properties");
         Logger LOGGER = Logger.getLogger(Generator.class);
         Generator generator = new Generator(LOGGER);
-        List<String> list = generator.exercisesGenerator(new TypeSelector(4, 100, 50, 100), 100);
-        List<String> ansList = generator.getAnswersList();
-        FileOperator.writeFile(list, ansList);
+//        List<String> list = generator.exercisesGenerator(new TypeSelector(4, 100, 50, 22), 10000);
+//        List<String> ansList = generator.getAnswersList();
+//        FileOperator.writeFile(list, ansList);
     }
     @Test
     public void testSub() {
@@ -68,6 +70,13 @@ public class TestUnit {
         FractionalNumber f2 = new FractionalNumber(7, 36, 19);
         NumberType result = Calculator.subCalculate(f1, f2);
         System.out.println(f1 + " - " + f2 + " = " + result);
+    }
+    @Test
+    public void testMul() {
+        FractionalNumber f1 = new FractionalNumber(4, 9, 1);
+        FractionalNumber f2 = new FractionalNumber(6, 13, 30);
+        NumberType result = Calculator.mulCalculate(f1, f2);
+        System.out.println(f1 + " × " + f2 + " = " + result);
     }
     @Test
     public void testIsLess() {
@@ -83,13 +92,22 @@ public class TestUnit {
         } else {
             System.out.println("2 " + (tmp.getInteger() < maxFraction.getInteger()));
         }
-//        else if(tmp.getInteger() < maxFraction.getInteger()){
-//            System.out.println("2 " + (tmp.getInteger() < maxFraction.getInteger()));
-//        } else {
-//            System.out.println("3 " + (((double)tmp.getNumerator() / (double)tmp.getDenominator()) <
-//                    ((double)maxFraction.getNumerator() / (double)maxFraction.getDenominator())));
-//        }
-
     }
-
+    private int test;
+    private void set(int i) {
+        i = 4;
+    }
+    @Test
+    public void testVariable() {
+        set(test);
+        System.out.println(test);
+    }
+    @Test
+    public void testWriteFile2() {
+        Logger LOGGER = Logger.getLogger(Generator.class);
+        Generator2 generator = new Generator2(LOGGER);
+        List<String> list = generator.exercisesGenerator(new TypeSelector(4, 101, 51, 22, 10000));
+        List<String> ansList = generator.getAnswersList();
+        FileOperator.writeFile(list, ansList);
+    }
 }

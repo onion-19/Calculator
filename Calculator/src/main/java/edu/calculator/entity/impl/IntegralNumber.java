@@ -35,11 +35,29 @@ public class IntegralNumber implements NumberType {
     public boolean isLess(NumberType num) {
         if(num.isInteger()) { //num是整数
             return this.num < num.getNum();
-        } else if(this.num < num.getInteger()) { //num是分数且num的整数部分大于当前整数
+        } else if(this.num <= num.getInteger()) { //num是分数且num的整数部分大于等于当前整数
+            if(num.getNumerator() == 0) {
+                return false;
+            }
             return true;
         } else {
             return false;
         }
+    }
+    @Override
+    public boolean equals(NumberType num) {
+//        if(num.isInteger() && this.num == num.getNum()) {
+//            return true;
+//        } else if(!num.isInteger() && num.getInteger() == this.num && num.getNumerator() == 0) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return getValue() == num.getValue();
+    }
+    @Override
+    public double getValue() {
+        return (double)num;
     }
 
     @Override

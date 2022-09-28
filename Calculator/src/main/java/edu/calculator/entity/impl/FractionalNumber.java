@@ -73,6 +73,14 @@ public class FractionalNumber implements NumberType {
             return this.integer < num.getInteger();
         }
     }
+    @Override
+    public boolean equals(NumberType num) {
+        return this.getValue() == num.getValue();
+    }
+    @Override
+    public double getValue() {
+        return (double)(integer + (double)numerator / (double)denominator);
+    }
 
     @Override
     public String toString() {

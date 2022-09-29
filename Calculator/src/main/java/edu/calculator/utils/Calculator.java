@@ -19,8 +19,6 @@ public class Calculator {
         //两个分数相加（分数部分是真分数）
         //1）求两个分母的最小公倍数，两个分子分别乘以最小公倍数
         int lcm = getLeastCommonMultiple(op1.getDenominator(), op2.getDenominator());
-//        int preN1 = op1.getNumerator() * lcm;
-//        int preN2 = op2.getNumerator() * lcm;
         int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
         int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
         //2）求两个分子（乘以最小公倍数之后）之和与最小公倍数之间的最大公约数
@@ -44,19 +42,11 @@ public class Calculator {
         } else if(!op1.isInteger() && op2.isInteger()) { //分数减整数
             if(op2.getNum() == 0)
                 return op1;
-//            return new FractionalNumber(op1.getDenominator() - op1.getNumerator(),
-//                    op1.getDenominator(), op2.getNum() - op1.getInteger() - 1);
             return new FractionalNumber(op1.getNumerator(), op1.getDenominator(), op1.getInteger() - op2.getNum());
         }
         //两个分数相减
         //1）求两个分母的最小公倍数，两个分子分别乘以最小公倍数
         int lcm = getLeastCommonMultiple(op1.getDenominator(), op2.getDenominator());
-//        int preN1 = op1.getNumerator() * lcm + op1.getInteger() * op1.getDenominator();
-//        int preN2 = op2.getNumerator() * lcm + op2.getInteger() * op2.getDenominator();
-//        int preN1 = (op1.getNumerator() + op1.getInteger() * op1.getDenominator()) * lcm;
-//        int preN2 = (op2.getNumerator() + op2.getInteger() * op2.getDenominator()) * lcm;
-//        int preN1 = op1.getNumerator() * lcm;
-//        int preN2 = op2.getNumerator() * lcm;
         int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
         int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
         //2）求两个分子（乘以最小公倍数之后）之差与最小公倍数之间的最大公约数
@@ -68,11 +58,6 @@ public class Calculator {
         }
         int gcd = getGreatestCommonDivisor(preN1 - preN2, lcm);
         //3）如果相减后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
-//        if((preN1 - preN2) % lcm == 0) {
-//            return new IntegralNumber((preN1 - preN2) / lcm);
-//        }
-//        return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
-//                        (preN1 - preN2) / lcm);
         return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
                 op1.getInteger() - op2.getInteger());
     }
@@ -105,9 +90,6 @@ public class Calculator {
                     op2.getNum() * op1.getInteger() + tmpInteger);
         }
         //两个分数相乘
-//        int n = op1.getNumerator() * op2.getNumerator() +
-//                op1.getInteger() * op2.getNumerator() +
-//                op1.getNumerator() * op2.getInteger();
         int n = (op1.getNumerator() + op1.getInteger() * op1.getDenominator()) *
                 (op2.getNumerator() + op2.getInteger() * op2.getDenominator());
         int d = op1.getDenominator() * op2.getDenominator();
@@ -145,8 +127,6 @@ public class Calculator {
         }
         return mulCalculate(op1, new FractionalNumber(d % n, n, d / n));//TODO
     }
-
-
     public static int getLeastCommonMultiple(int d1, int d2) {//分母1、分母2
         return d1 * d2 / getGreatestCommonDivisor(d1, d2);
     }
@@ -165,6 +145,30 @@ public class Calculator {
             n = tmp;
         }
         return n;
+    }
+    public static NumberType calculatorChooser(NumberType op1, NumberType op2, Generator.SymbolType symbolType) {
+        switch (symbolType) {
+            case ADD:
+                return Calculator.addCalculate(op1, op2);
+            case SUB:
+                return Calculator.subCalculate(op1, op2);
+            case MUL:
+                return Calculator.mulCalculate(op1, op2);
+            default:
+                return Calculator.divCalculate(op1, op2);
+        }
+    }
+    public static NumberType calculate(NumberType op1, NumberType op2, NumberType op3,
+                                       Generator.SymbolType symbol1, Generator.SymbolType symbol2, int bracketsPos) {
+        if(bracketsPos == 0 || bracketsPos == 1) {
+            if(op3 == null) {
+                return calculatorChooser(op1, op2, symbol1);
+            } else {
+                return calculatorChooser(calculatorChooser(op1, op2, symbol1), op3, symbol2);
+            }
+        } else { //先算右边
+            return calculatorChooser(op1, calculatorChooser(op2, op3, symbol2), symbol1);
+        }
     }
 
 }

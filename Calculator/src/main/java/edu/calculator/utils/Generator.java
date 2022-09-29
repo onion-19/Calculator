@@ -25,6 +25,7 @@ public class Generator {
 
     private Logger LOGGER;
 
+    public Generator() {}
     public Generator(Logger LOGGER) {
         this.LOGGER = LOGGER;
     }
@@ -147,7 +148,7 @@ public class Generator {
                     op2 = deal(type, random, op1, op2, symbol1, 2);
                 }
                 if(op2 == null) {   sum++;  continue;   }
-                ans1 = calculatorChooser(op1, op2, symbol1);
+                ans1 = Calculator.calculatorChooser(op1, op2, symbol1);
     //                LOGGER.info("============success   count: " + count + "    " + op1 + symbol1 + op2 + " = " + ans1);
                 checkMap(op1, op2, symbol1);
                 if(isNew.add(op1.toString() + symbol1.toString() + op2.toString())) {
@@ -255,14 +256,14 @@ public class Generator {
         if(op3 == null) {
             return false;
         }
-        ans2 = calculatorChooser(op2, op3, symbol2);
+        ans2 = Calculator.calculatorChooser(op2, op3, symbol2);
         while(op1 != null && (!isCompliant(op1, ans2, symbol1) || isDuplicate(op1, ans2, symbol1))) {
             op1 = deal(type, random, op1, ans2, symbol1, 1);
         }
         if(op1 == null) {
             return false;
         }
-        ans1 = calculatorChooser(op1, ans2, symbol1);
+        ans1 = Calculator.calculatorChooser(op1, ans2, symbol1);
         return true;
     }
     private boolean leftToRight(TypeSelector type, Random random) {
@@ -272,14 +273,14 @@ public class Generator {
         if(op2 == null) {
             return false;
         }
-        ans1 = calculatorChooser(op1, op2, symbol1);
+        ans1 = Calculator.calculatorChooser(op1, op2, symbol1);
         while(op3 != null && (!isCompliant(ans1, op3, symbol2) || isDuplicate(ans1, op3, symbol2))) {
             op3 = deal(type, random, ans1, op3, symbol2, 2);
         }
         if(op3 == null) {
             return false;
         }
-        ans2 = calculatorChooser(ans1, op3, symbol2);
+        ans2 = Calculator.calculatorChooser(ans1, op3, symbol2);
         return true;
     }
     private NumberType deal(TypeSelector type, Random random, NumberType leftOp, NumberType rightOp, SymbolType symbol, int changeableOp) {
@@ -365,22 +366,22 @@ public class Generator {
                 return true;
         }
     }
-    private NumberType calculatorChooser(NumberType op1, NumberType op2, SymbolType symbolType) {
-        switch (symbolType) {
-            case ADD:
-                return Calculator.addCalculate(op1, op2);
-            case SUB:
-                return Calculator.subCalculate(op1, op2);
-            case MUL:
-                return Calculator.mulCalculate(op1, op2);
-            default:
-                return Calculator.divCalculate(op1, op2);
-        }
-    }
+//    public static NumberType calculatorChooser(NumberType op1, NumberType op2, SymbolType symbolType) {
+//        switch (symbolType) {
+//            case ADD:
+//                return Calculator.addCalculate(op1, op2);
+//            case SUB:
+//                return Calculator.subCalculate(op1, op2);
+//            case MUL:
+//                return Calculator.mulCalculate(op1, op2);
+//            default:
+//                return Calculator.divCalculate(op1, op2);
+//        }
+//    }
     public List<String> getAnswersList() {
         return answersList;
     }
-    private enum SymbolType {
+    public static enum SymbolType {
         SUB, ADD, MUL, DIV;
         @Override
         public String toString() {

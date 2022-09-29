@@ -39,6 +39,17 @@ public class TypeSelector {
 
     private NumberType minInteger;
 
+    public TypeSelector(int range, int sum) {
+        this.integerRange = range;
+        this.fractionRange = range;
+        this.denominatorRange = range;
+        this.maxInteger = new IntegralNumber(this.integerRange - 1);
+        this.maxFraction = new FractionalNumber(this.denominatorRange - 2, this.denominatorRange - 1, this.fractionRange - 1);
+        this.minFraction = new FractionalNumber(1, this.denominatorRange - 1, 0);
+        this.minInteger = new IntegralNumber(0);
+        this.sum = sum;
+    }
+
     public TypeSelector(int type, Integer integerRange, Integer fractionRange, Integer denominatorRange, int sum) {
         switch(type) {
             case NONE_RANGE:

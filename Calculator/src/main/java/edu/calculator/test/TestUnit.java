@@ -5,16 +5,16 @@ import edu.calculator.entity.TypeSelector;
 import edu.calculator.entity.impl.FractionalNumber;
 import edu.calculator.entity.impl.IntegralNumber;
 import edu.calculator.utils.Calculator;
+import edu.calculator.utils.Comparator;
 import edu.calculator.utils.FileOperator;
 import edu.calculator.utils.Generator;
-import edu.calculator.utils.Generator2;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestUnit {
     private enum SymbolType {
@@ -105,9 +105,68 @@ public class TestUnit {
     @Test
     public void testWriteFile2() {
         Logger LOGGER = Logger.getLogger(Generator.class);
-        Generator2 generator = new Generator2(LOGGER);
+        Generator generator = new Generator(LOGGER);
         List<String> list = generator.exercisesGenerator(new TypeSelector(4, 101, 51, 22, 10000));
         List<String> ansList = generator.getAnswersList();
         FileOperator.writeFile(list, ansList);
     }
+    @Test
+    public void testGetNumber() {
+//        System.out.println(FileOperator.getNumber("( 7)）  \n ' 34/100"));
+    }
+    @Test
+    public void testRegex() {
+//        String numStr = "( 5 ' 34/100";
+        String numStr = "6. 11 ÷ (18 + 11'12/14) = ";
+        String regex = "[ ()（）\\[\\]【】{}'`/\n\t]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(numStr);
+        String[] numStrSplit = matcher.replaceAll(" ").split("\\s+");
+        System.out.println(numStrSplit.length + "?????????????");
+        for(int i = 0; i < numStrSplit.length; i++) {
+            System.out.println(numStrSplit[i]);
+        }
+//        for(int i = 0; i < numStrSplit.length; i++) {
+//            if(i == 0) {
+//                continue;
+//            }
+//            System.out.println("----------   " + Integer.parseInt(numStrSplit[i]));
+//        }
+    }
+    @Test
+    public void testSplit() {
+        String numStr = "6. 11 ÷ (18 + 11'12/14) = ";
+        String[] numStrSplit = numStr.split("\\s+");
+        System.out.println(numStrSplit.length + "?????????????");
+        for(int i = 0; i < numStrSplit.length; i++) {
+            System.out.println(numStrSplit[i]);
+        }
+        for(int i = 0; i < numStrSplit.length; i++) {
+            if(i == 1 || i == 3 || i == 5) {
+                System.out.println("<<<<<<<<<<<<<<<<<<<<  " + FileOperator.getNumber(numStrSplit[i]));
+//                System.out.println("----------   " + Integer.parseInt(numStrSplit[i]));
+            }
+        }
+    }
+    @Test
+    public void testReadExercises() {
+        List<NumberType> correctAns = FileOperator.readExercises("O:\\Exercises.txt");
+        List<NumberType> ans = FileOperator.readAnswers("O:\\Answers.txt");
+        for (int i = 0; i < correctAns.size(); i++) {
+            System.out.println((i + 1) + ". " + correctAns.get(i) + "   ----   " + ans.get(i));
+        }
+    }
+    @Test
+    public void testCompare() {
+        List<NumberType> correctAns = FileOperator.readExercises("O:\\Exercises.txt");
+        List<NumberType> ans = FileOperator.readAnswers("O:\\Answers.txt");
+        Comparator.compare(correctAns, ans);
+
+    }
+    @Test
+    public void testAbs() {
+        System.out.println((double)Math.abs(3 - 4));
+    }
+
+
 }

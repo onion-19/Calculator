@@ -18,30 +18,36 @@ public class Entry {
         Integer range = -1;
         String exercisefile = null, answerfile = null;
         try {
-            while(-1 != (param = getOpt.getNextOption())) {
-                switch(param) {
-                    case 'n':
-                        sum = Integer.parseInt(getOpt.getOptionArg());
-                        if(sum <= 0) {
-                            throw new NumberFormatException();
-                        }
-                        break;
-                    case 'r':
-                        range = Integer.parseInt(getOpt.getOptionArg());
-                        if(range < 1) {
-                            throw new NumberFormatException();
-                        }
-                        break;
-                    case 'e':
-                        exercisefile = getOpt.getOptionArg();
-                        break;
-                    case 'a':
-                        answerfile = getOpt.getOptionArg();
-                        break;
-                    default:
-                        //TODO 提示帮助信息
-                        break;
-                }
+            if(-1 == (param = getOpt.getNextOption())) {
+                System.out.println("参数说明：\n" +
+                        "生成题目：\n\t-r <自然数、真分数和真分数分母的范围> -n <生成题目的数量>\n" +
+                        "判断答案对错：\n\t-e <题目文件的绝对路径> -a <答案文件的绝对路径>");
+                return;
+            } else {
+                do {
+                    switch(param) {
+                        case 'n':
+                            sum = Integer.parseInt(getOpt.getOptionArg());
+                            if(sum <= 0) {
+                                throw new NumberFormatException();
+                            }
+                            break;
+                        case 'r':
+                            range = Integer.parseInt(getOpt.getOptionArg());
+                            if(range < 1) {
+                                throw new NumberFormatException();
+                            }
+                            break;
+                        case 'e':
+                            exercisefile = getOpt.getOptionArg();
+                            break;
+                        case 'a':
+                            answerfile = getOpt.getOptionArg();
+                            break;
+                        default:
+                            break;
+                    }
+                } while(-1 != (param = getOpt.getNextOption()));
             }
             if(range != -1 && sum != -1) {
                 TypeSelector type = new TypeSelector(range, sum);
@@ -62,7 +68,6 @@ public class Entry {
         } catch(IllegalArgumentException e) {
             e.printStackTrace();
         } catch(NumberFormatException e) {
-            e.printStackTrace();
             e.printStackTrace();
         }
     }

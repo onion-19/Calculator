@@ -17,14 +17,13 @@ public class Calculator {
                     op1.getInteger() + op2.getNum());
         }
         //两个分数相加（分数部分是真分数）
-        //1）求两个分母的最小公倍数，两个分子分别乘以最小公倍数
+        //1）求两个分母的最小公倍数
         int lcm = getLeastCommonMultiple(op1.getDenominator(), op2.getDenominator());
         int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
         int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
-        //2）求两个分子（乘以最小公倍数之后）之和与最小公倍数之间的最大公约数
+        //2）求两个分子之和与最小公倍数之间的最大公约数
         int gcd = getGreatestCommonDivisor(preN1 + preN2, lcm);
-        //3）如果求和后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
-        if((preN1 + preN2) % lcm == 0) { //TODO
+        if((preN1 + preN2) % lcm == 0) {
             return new IntegralNumber(op1.getInteger() + op2.getInteger() + 1);
         }
         return preN1 + preN2 > lcm ?
@@ -49,7 +48,6 @@ public class Calculator {
         int lcm = getLeastCommonMultiple(op1.getDenominator(), op2.getDenominator());
         int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
         int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
-        //2）求两个分子（乘以最小公倍数之后）之差与最小公倍数之间的最大公约数
         int leftInteger = op1.getInteger();
         if(preN1 - preN2 == 0) {
             return new IntegralNumber(op1.getInteger() - op2.getInteger());
@@ -57,8 +55,8 @@ public class Calculator {
             leftInteger -= 1;
             preN1 += lcm;
         }
+        //2）求两个分子之差与最小公倍数之间的最大公约数
         int gcd = getGreatestCommonDivisor(preN1 - preN2, lcm);
-        //3）如果相减后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
         return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
                 leftInteger - op2.getInteger());
     }
@@ -76,7 +74,7 @@ public class Calculator {
             }
             int gcd = getGreatestCommonDivisor(preN, op2.getDenominator());
             return new FractionalNumber(preN / gcd, op2.getDenominator() / gcd,
-                    op1.getNum() * op2.getInteger() + tmpInteger);//整数部分相乘加上分数部分相乘后得到的整数部分
+                    op1.getNum() * op2.getInteger() + tmpInteger);
         } else if(!op1.isInteger() && op2.isInteger()) {
             int preN = op1.getNumerator() * op2.getNum();
             if(preN % op1.getDenominator() == 0) {
@@ -105,7 +103,14 @@ public class Calculator {
             return op1;
         if(op1.isInteger() && op2.isInteger()) {
             int gcd = getGreatestCommonDivisor(op1.getNum(), op2.getNum());
-            return new FractionalNumber(op1.getNum() / gcd, op2.getNum() / gcd);
+            int numerator = op1.getNum() / gcd;
+            int denominator = op2.getNum() / gcd;
+            if(numerator % denominator == 0) {
+                return new IntegralNumber(numerator / denominator);
+            } else if(numerator / denominator != 0) {
+                return new FractionalNumber(numerator % denominator, denominator, numerator / denominator);
+            }
+            return new FractionalNumber(numerator, denominator);
         } else if(op1.isInteger() && !op2.isInteger()) {
             int d = op2.getDenominator(); //原来的分母
             int n = op2.getNumerator() + op2.getInteger() * d; //原来的分子（加上整数部分）

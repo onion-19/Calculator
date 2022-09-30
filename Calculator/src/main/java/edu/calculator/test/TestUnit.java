@@ -147,7 +147,6 @@ public class TestUnit {
         for(int i = 0; i < numStrSplit.length; i++) {
             if(i == 1 || i == 3 || i == 5) {
                 System.out.println("<<<<<<<<<<<<<<<<<<<<  " + FileOperator.getNumber(numStrSplit[i]));
-//                System.out.println("----------   " + Integer.parseInt(numStrSplit[i]));
             }
         }
     }
@@ -184,7 +183,6 @@ public class TestUnit {
     }
     @Test
     public void testCalculateWrong() throws IOException {
-//        BufferedReader bread = new BufferedReader(new FileReader(new File("O:\\new\\Grade.txt")));
         BufferedReader bread = new BufferedReader(new FileReader(new File("O:\\Grade.txt")));
         String wrongLine = "";
         bread.readLine();
@@ -218,18 +216,91 @@ public class TestUnit {
     }
     @Test
     public void testCompareWrong() throws IOException {
-        List<NumberType> correctAns = FileOperator.readExercises("O:\\new\\Exercises.txt");
+        List<NumberType> correctAns = FileOperator.readExercises("O:\\Exercises.txt");
 //        List<NumberType> correctAns = FileOperator.readExercises("O:\\new\\WrongExercises.txt");
 //        List<NumberType> ans = FileOperator.readAnswers("O:\\new\\WrongAnswers.txt");
-        List<NumberType> ans = FileOperator.readAnswers("O:\\new\\Answers.txt");
+        List<NumberType> ans = FileOperator.readAnswers("O:\\Answers.txt");
         Comparator.compare(correctAns, ans);
-
 //        BufferedWriter bwriter = new BufferedWriter(new FileWriter(new File("O:\\CalAns.txt")));
 //        for(int i = 0; i < correctAns.size(); i++) {
 //            bwriter.write((i + 1) + ". " + correctAns.get(i).toString() + "\n");
 //        }
 //        bwriter.close();
     }
+    @Test
+    public void testEntry() {
+        //测试题目生成功能
+        TypeSelector type = new TypeSelector(11, 10000);
+        Generator generator = new Generator();
+        List<String> exercisesList = generator.exercisesGenerator(type);
+        List<String> answersList = generator.getAnswersList();
+        FileOperator.writeFile(exercisesList, answersList);
+        //测试判断答案对错功能
+        List<NumberType> correctAns = FileOperator.readExercises("O:\\Exercises.txt");
+        List<NumberType> ans = FileOperator.readAnswers("O:\\Answers.txt");
+        if(correctAns == null || ans == null) {
+            System.exit(0);
+        } else {
+            Comparator.compare(correctAns, ans);
+        }
+    }
+    @Test
+    public void testCalculate() {
+        FractionalNumber f1 = new FractionalNumber(1, 2, 25); //25'1/2
+        FractionalNumber f2 = new FractionalNumber(7, 36, 19); //19'7/36
+        FractionalNumber f3 = new FractionalNumber(5, 6, 53); //19'7/36
+        IntegralNumber i1 = new IntegralNumber(20);
+        IntegralNumber i2 = new IntegralNumber(7);
+        //测试两个分数之间四则运算
+        System.out.println(f1 + " + " + f2 + " = " + Calculator.addCalculate(f1, f2));
+        System.out.println(f1 + " - " + f2 + " = " + Calculator.subCalculate(f1, f2));
+        System.out.println(f1 + " × " + f2 + " = " + Calculator.mulCalculate(f1, f2));
+        System.out.println(f2 + " ÷ " + f1 + " = " + Calculator.divCalculate(f2, f1));
+        //测试两个整数之间的四则运算
+        System.out.println(i1 + " + " + i2 + " = " + Calculator.addCalculate(i1, i2));
+        System.out.println(i1 + " - " + i2 + " = " + Calculator.subCalculate(i1, i2));
+        System.out.println(i1 + " × " + i2 + " = " + Calculator.mulCalculate(i1, i2));
+        System.out.println(i2 + " ÷ " + i1 + " = " + Calculator.divCalculate(i2, i1));
+        //测试三个整数之间的四则运算
+        System.out.println(i1 + " + " + i2 + " + " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.ADD, 0));
+        System.out.println(i1 + " + " + i2 + " - " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.SUB, 0));
+        System.out.println(i1 + " + " + i2 + " × " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.MUL, 0));
+        System.out.println(i1 + " + " + i2 + " ÷ " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.DIV, 0));
+        //测试三个整数之间的四则运算（括号在前两个数的位置）
+        System.out.println("(" + i1 + " + " + i2 + ")" + " + " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.ADD, 1));
+        System.out.println("(" + i1 + " + " + i2 + ")" + " - " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.SUB, 1));
+        System.out.println("(" + i1 + " + " + i2 + ")" + " × " + i2 + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.ADD, Generator.SymbolType.MUL, 1));
+        System.out.println("(" + i1 + " + " + i2 + ")" + " ÷ " + i1 + " = " + Calculator.calculate(i1, i2, i1, Generator.SymbolType.ADD, Generator.SymbolType.DIV, 1));
+        //测试三个整数之间的四则运算（括号在后两个数的位置）
+        System.out.println(i1 + " × " + "(" + i1 + " - " + i2 + ")" + " = " + Calculator.calculate(i1, i1, i2, Generator.SymbolType.MUL, Generator.SymbolType.SUB, 2));
+        System.out.println(i2 + " ÷ " + "(" + i1 + " - " + i2 + ")" + " = " + Calculator.calculate(i2, i1, i2, Generator.SymbolType.DIV, Generator.SymbolType.SUB, 2));
+        System.out.println(i1 + " × " + "(" + i2 + " + " + i2 + ")" + " = " + Calculator.calculate(i1, i2, i2, Generator.SymbolType.MUL, Generator.SymbolType.ADD, 2));
+        System.out.println(i2 + " ÷ " + "(" + i1 + " + " + i2 + ")" + " = " + Calculator.calculate(i2, i1, i2, Generator.SymbolType.DIV, Generator.SymbolType.ADD, 2));
+        //测试三个分数之间的四则运算
+        System.out.println(f1 + " + " + f2 + " + " + f2 + " = " + Calculator.calculate(f1, f2, f2, Generator.SymbolType.ADD, Generator.SymbolType.ADD, 0));
+        System.out.println(f1 + " + " + f2 + " - " + f2 + " = " + Calculator.calculate(f1, f2, f2, Generator.SymbolType.ADD, Generator.SymbolType.SUB, 0));
+        System.out.println(f1 + " + " + f2 + " × " + f2 + " = " + Calculator.calculate(f1, f2, f2, Generator.SymbolType.ADD, Generator.SymbolType.MUL, 0));
+        System.out.println(f1 + " + " + f2 + " ÷ " + f1 + " = " + Calculator.calculate(f1, f2, f1, Generator.SymbolType.ADD, Generator.SymbolType.DIV, 0));
+        //测试三个分数之间的四则运算（括号在前两个数的位置）
+        System.out.println("(" + f1 + " + " + f2 + ")" + " + " + f3 + " = " + Calculator.calculate(f1, f2, f3, Generator.SymbolType.ADD, Generator.SymbolType.ADD, 1));
+        System.out.println("(" + f3 + " + " + f2 + ")" + " - " + f1 + " = " + Calculator.calculate(f3, f2, f1, Generator.SymbolType.ADD, Generator.SymbolType.SUB, 1));
+        System.out.println("(" + f1 + " + " + f2 + ")" + " × " + f2 + " = " + Calculator.calculate(f1, f2, f2, Generator.SymbolType.ADD, Generator.SymbolType.MUL, 1));
+        System.out.println("(" + f1 + " + " + f2 + ")" + " ÷ " + f3 + " = " + Calculator.calculate(f1, f2, f3, Generator.SymbolType.ADD, Generator.SymbolType.DIV, 1));
+        //测试三个分数之间的四则运算（括号在后两个数的位置）
+        System.out.println(f1 + " × " + "(" + f3 + " - " + f2 + ")" + " = " + Calculator.calculate(f1, f3, f2, Generator.SymbolType.MUL, Generator.SymbolType.SUB, 2));
+        System.out.println(f2 + " ÷ " + "(" + f3 + " - " + f1 + ")" + " = " + Calculator.calculate(f2, f3, f1, Generator.SymbolType.DIV, Generator.SymbolType.SUB, 2));
+        System.out.println(f1 + " × " + "(" + f2 + " + " + f3 + ")" + " = " + Calculator.calculate(f1, f2, f3, Generator.SymbolType.MUL, Generator.SymbolType.ADD, 2));
+        System.out.println(f2 + " ÷ " + "(" + f1 + " + " + f3 + ")" + " = " + Calculator.calculate(f2, f1, f3, Generator.SymbolType.DIV, Generator.SymbolType.ADD, 2));
+        //测试整数和分数之间的四则运算
+        System.out.println(i1 + " + " + f2 + " + " + f2 + " = " + Calculator.calculate(i1, f2, f2, Generator.SymbolType.ADD, Generator.SymbolType.ADD, 0));
+        System.out.println(f1 + " + " + i1 + " - " + f2 + " = " + Calculator.calculate(f1, i1, f2, Generator.SymbolType.ADD, Generator.SymbolType.SUB, 0));
+        System.out.println(f1 + " + " + i2 + " × " + f2 + " = " + Calculator.calculate(f1, i2, f2, Generator.SymbolType.ADD, Generator.SymbolType.MUL, 0));
+        System.out.println(f1 + " + " + i2 + " ÷ " + f1 + " = " + Calculator.calculate(f1, i2, f1, Generator.SymbolType.ADD, Generator.SymbolType.DIV, 0));
+
+
+    }
+
+
 
 
 }

@@ -5,6 +5,7 @@ import edu.calculator.entity.impl.FractionalNumber;
 import edu.calculator.entity.impl.IntegralNumber;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,8 +22,8 @@ public class FileOperator {
 
         BufferedWriter ewriter = null, awriter = null;
         try {
-            ewriter = new BufferedWriter(new FileWriter(efile));
-            awriter = new BufferedWriter(new FileWriter(afile));
+            ewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(efile), StandardCharsets.UTF_8));
+            awriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(afile), StandardCharsets.UTF_8));
 
             for(int i = 1; i <= exercisesList.size(); i++) {
                 ewriter.write(i + ". " + exercisesList.get(i - 1) + " = " + "\n");
@@ -44,6 +45,8 @@ public class FileOperator {
                 e.printStackTrace();
             }
         }
+        System.out.println("生成的题目已存入文件：" + efile.getAbsolutePath());
+        System.out.println("题目的答案已存入文件：" + afile.getAbsolutePath());
     }
     public static void writeGrade(List<Integer> correctList, List<Integer> wrongList) {
         if(correctList == null || wrongList == null) {
@@ -52,7 +55,7 @@ public class FileOperator {
         File f = new File(GRADE_PATH);
         BufferedWriter bwrite = null;
         try {
-            bwrite = new BufferedWriter(new FileWriter(f));
+            bwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8));
             bwrite.write("Correct: " + correctList.size() + " (");
             for(int i = 0; i < correctList.size() - 1; i++) {
                 bwrite.write(correctList.get(i) + ", ");
@@ -80,6 +83,7 @@ public class FileOperator {
                 e.printStackTrace();
             }
         }
+        System.out.println("答案正误的比较结果已存入文件：" + f.getAbsolutePath());
     }
     public static List<NumberType> readAnswers(String answersFilePath) {
         List<NumberType> ansList = new ArrayList<>();
@@ -96,7 +100,7 @@ public class FileOperator {
         Matcher matcher;
         String[] strSplit;
         try {
-            bread = new BufferedReader(new FileReader(f));
+            bread = new BufferedReader(new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8));
             //逐行读取文件
             while(null != (str = bread.readLine())) {
                 matcher = pattern.matcher(str);
@@ -133,7 +137,7 @@ public class FileOperator {
         String[] strSplit;
         int bracketsPos;
         try {
-            bread = new BufferedReader(new FileReader(f));
+            bread = new BufferedReader(new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8));
             //逐行读取文件
             while(null != (str = bread.readLine())) {
                 strSplit = str.split("\\s+");
@@ -151,7 +155,7 @@ public class FileOperator {
                     }
                     ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), getNumber(strSplit[5]),
                             getSymbol(strSplit[2]), getSymbol(strSplit[4]), bracketsPos));
-                } else { //括号冗余、操作数或运算符数量不符
+                } else { //括号冗余、操作数大于 3 、表达式不完整、格式有误或运算符数量不符
                     ansList.add(null);
                 }
             }

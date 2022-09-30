@@ -25,9 +25,6 @@ public class IntegralNumber implements NumberType {
         return -1;
     }
     @Override
-    public void setInteger(int integer) {
-    }
-    @Override
     public boolean isInteger() {
         return true;
     }

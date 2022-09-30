@@ -19,9 +19,7 @@ public class Comparator {
                 wrongList.add(i + 1);
             }
         }
-        correctList.forEach(item -> {
-            System.out.println(item);
-        });
+//        correctList.forEach(System.out::println);
         FileOperator.writeGrade(correctList, wrongList);
     }
 

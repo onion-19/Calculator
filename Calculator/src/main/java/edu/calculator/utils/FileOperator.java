@@ -53,22 +53,17 @@ public class FileOperator {
         }
         File f = new File(GRADE_PATH);
         BufferedWriter bwrite = null;
-//        int N;
         try {
             bwrite = new BufferedWriter(new FileWriter(f));
             bwrite.write("Correct: " + correctList.size() + " (");
-//            for(int i = 0; i < correctList.size(); i++) {
             for(int i = 0; i < correctList.size() - 1; i++) {
                 bwrite.write(correctList.get(i) + ", ");
             }
-//            N = correctList.size();
             if(correctList.size() != 0) {
                 bwrite.write("" + correctList.get(correctList.size() - 1));
-//                bwrite.write(correctList.get(N - 1));
             }
             bwrite.write(")\n");
             bwrite.write("Wrong: " + wrongList.size() + " (");
-//            for(int i = 0; i < wrongList.size(); i++) {
             for(int i = 0; i < wrongList.size() - 1; i++) {
                 bwrite.write(wrongList.get(i) + ", ");
             }
@@ -130,14 +125,11 @@ public class FileOperator {
         String regex = "[ ()（）\\[\\]【】{}]";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher;
-//        String[] numStrSplit = matcher.replaceAll(" ").split("\\s+");
-//        String[] numStrSplit;
         File f = new File(exercisesFilePath);
         //判断文件是否存在
         if(!f.exists()) {
             System.out.println("文件 " + exercisesFilePath + " 不存在");
             return null;
-//            throw new FileNotFoundException();
         }
         BufferedReader bread = null;
         String str = null;
@@ -147,21 +139,32 @@ public class FileOperator {
             bread = new BufferedReader(new FileReader(f));
             //逐行读取文件
             while(null != (str = bread.readLine())) {
+//                System.out.println("-------test--------------  " + str);
                 strSplit = str.split("\\s+");
                 if(strSplit.length == 5) { //两个操作数，不含括号
-                    ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), null, getSymbol(strSplit[2]), null, 0));
+                    NumberType tmp = Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), null,
+                            getSymbol(strSplit[2]), null, 0);
+                    ansList.add(tmp);
+//                    ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), null,
+//                            getSymbol(strSplit[2]), null, 0));
+                    System.out.println("2            " + ansList.get(ansList.size() - 1));
+
 //                } else if(strSplit.length == 7 && (-1 != (bracketsPos = str.indexOf("(")))) { //两个操作数，含括号
-                } else if(strSplit.length == 7 && (-1 == (bracketsPos = str.indexOf("(")))) { //三个操作数，不含括号
+                } else if(strSplit.length == 7 && !str.contains("(")) { //三个操作数，不含括号
                     ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), getNumber(strSplit[5]),
                             getSymbol(strSplit[2]), getSymbol(strSplit[4]), 0));
-                } else if(strSplit.length == 7 && (-1 != (bracketsPos = str.indexOf("(")))) { //三个操作数，含括号
+                    System.out.println("3         " + ansList.get(ansList.size() - 1));
+
+                } else if(strSplit.length == 7 && str.contains("(")) { //三个操作数，含括号
+                    bracketsPos = strSplit[1].contains("(") ? 1 : 2;
                     for(int i = 0; i < strSplit.length; i++) {
                         matcher = pattern.matcher(strSplit[i]);
                         strSplit[i] = matcher.replaceAll("");
                     }
-                    System.out.println(str);
                     ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), getNumber(strSplit[5]),
-                            getSymbol(strSplit[2]), getSymbol(strSplit[4]), (bracketsPos == 1 ? 1 : 2)));
+                            getSymbol(strSplit[2]), getSymbol(strSplit[4]), bracketsPos));
+                    System.out.println("4          " + ansList.get(ansList.size() - 1));
+
                 } else { //括号冗余、操作数或运算符数量不符
                     //TODO
                     System.out.println("********  " + str);

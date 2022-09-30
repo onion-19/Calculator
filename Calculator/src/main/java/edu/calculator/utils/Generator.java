@@ -4,7 +4,7 @@ import edu.calculator.entity.NumberType;
 import edu.calculator.entity.TypeSelector;
 import edu.calculator.entity.impl.FractionalNumber;
 import edu.calculator.entity.impl.IntegralNumber;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import java.util.*;
 
@@ -23,12 +23,12 @@ public class Generator {
     private NumberType op1, op2, op3, ans1, ans2, result;
     private SymbolType symbol1, symbol2;
 
-    private Logger LOGGER;
+//    private Logger LOGGER;
 
     public Generator() {}
-    public Generator(Logger LOGGER) {
-        this.LOGGER = LOGGER;
-    }
+//    public Generator(Logger LOGGER) {
+//        this.LOGGER = LOGGER;
+//    }
 
     public void checkMap(NumberType op1, NumberType op2, SymbolType symbolType) {
         switch (symbolType) {
@@ -54,17 +54,20 @@ public class Generator {
         int x = type.getIntegerRange();
         int y = type.getFractionRange();
         int z = type.getDenominatorRange();
-        IntegralNumber maxInteger = new IntegralNumber(x - 1);
-        FractionalNumber maxFraction = new FractionalNumber(z - 1, z, y - 1);
+//        IntegralNumber maxInteger = new IntegralNumber(x - 1);
+//        FractionalNumber maxFraction = new FractionalNumber(z - 1, z, y - 1);
         int denominator = z == 2 ? 2 : (random.nextInt(z - 2) + 2); //分母从2开始    [2, z)
+        int[] arr = new int[2];
         if(lowerNum == null && upperNum == null) {
             if(choose == 0) {
                 return new IntegralNumber(random.nextInt(x));
             }
-            return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator, random.nextInt(y)); //分子从1开始
+            simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+            return new FractionalNumber(arr[0], arr[1], random.nextInt(y)); //分子从1开始
         } else if(lowerNum != null && upperNum == null) {
             if(choose == 0) {
-                if(lowerNum.isLess(maxInteger)) {
+//                if(lowerNum.isLess(maxInteger)) {
+                if(lowerNum.isLess(type.getMaxInteger())) {
                     if(lowerNum.isInteger()) {
                         return new IntegralNumber(random.nextInt(x - lowerNum.getNum() - 1) + lowerNum.getNum() + 1);
                     }
@@ -72,9 +75,11 @@ public class Generator {
                             new IntegralNumber(random.nextInt(x - lowerNum.getInteger() - 1) + lowerNum.getInteger() + 1);
                 }
             } //  System.out.println("pre351: maxFraction.getInteger: " + maxFraction.getInteger() + " lowerNum.getInteger(): " + lowerNum.getInteger());
-            if(lowerNum.isLess(maxFraction)) {
+//            if(lowerNum.isLess(maxFraction)) {
+            if(lowerNum.isLess(type.getMaxFraction())) {
                 if(lowerNum.isInteger()) {
-                    return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator,
+                    simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+                    return new FractionalNumber(arr[0], arr[1],
                             random.nextInt(y - lowerNum.getNum()) + lowerNum.getNum());
                 }
                 if(lowerNum.getInteger() == y) {
@@ -82,15 +87,18 @@ public class Generator {
                     while(Math.ceil(rate * (double)denominator) == denominator) { //TODO
                         denominator = random.nextInt(z - denominator - 1) + denominator + 1;
                     }
-                    return new FractionalNumber(random.nextInt((int)Math.ceil(rate * (double)denominator)), denominator, y - 1);
+                    simplifyFraction(arr, random.nextInt((int)Math.ceil(rate * (double)denominator)), denominator);
+                    return new FractionalNumber(arr[0], arr[1], y - 1);
                 }  // System.out.println("351: y: " + y + " lowerNum.getInteger(): " + lowerNum.getInteger());
                 if(lowerNum.getInteger() == y - 1) {
-                    return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator, y - 1);
+                    simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+                    return new FractionalNumber(arr[0], arr[1], y - 1);
                 }
-                return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator,
+                simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+                return new FractionalNumber(arr[0], arr[1],
                         random.nextInt(y - lowerNum.getInteger() - 1) + lowerNum.getInteger() + 1);
             }
-            if(lowerNum.isLess(maxInteger)) { //choose等于1但无法生成合法分数的情况
+            if(lowerNum.isLess(type.getMaxInteger())) { //choose等于1但无法生成合法分数的情况
                 if(lowerNum.isInteger()) {
                     return new IntegralNumber(random.nextInt(x - lowerNum.getNum() - 1) + lowerNum.getNum() + 1);
                 }
@@ -102,25 +110,30 @@ public class Generator {
                 return new IntegralNumber(0);
             }
             if(choose == 0) {
-                if(upperNum.isLess(maxInteger)) {
+                if(upperNum.isLess(type.getMaxInteger())) {
                     if(upperNum.isInteger()) {
                         return new IntegralNumber(random.nextInt(upperNum.getNum()));
-                    } //  System.out.println("366: " + " upperNum.getInteger(): " + upperNum.getInteger());
+                    }
                     return new IntegralNumber(random.nextInt(upperNum.getInteger() + 1));
                 }
                 return new IntegralNumber(random.nextInt(x));
             }
-            if(upperNum.isLess(maxFraction)) {
-                if(upperNum.isInteger()) { //  System.out.println("373: " + " upperNum.getNum(): " + upperNum.getNum());
-                    return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator,
+            if(upperNum.isLess(type.getMaxFraction())) {
+                if(upperNum.isInteger()) {
+                    simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+                    return new FractionalNumber(arr[0], arr[1],
                             random.nextInt(upperNum.getNum()));
-                } //  System.out.println("376: " + " upperNum.getInteger(): " + upperNum.getInteger());
-                if(upperNum.getInteger() == 0)
-                    return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator, 0);
-                return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator,
+                }
+                if(upperNum.getInteger() == 0) {
+                    simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+                    return new FractionalNumber(arr[0], arr[1], 0);
+                }
+                simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+                return new FractionalNumber(arr[0], arr[1],
                         random.nextInt(upperNum.getInteger()));
             }
-            return new FractionalNumber(random.nextInt(denominator - 1) + 1, denominator,
+            simplifyFraction(arr, random.nextInt(denominator - 1) + 1, denominator);
+            return new FractionalNumber(arr[0], arr[1],
                     random.nextInt(y));
         } else {
             try {
@@ -129,9 +142,17 @@ public class Generator {
                 e.printStackTrace();
             } finally {
                 System.out.println("--------------------numGenerator--同时指定了上下限的情况------------------");
-                return null;
             }
+            return null;
         }
+    }
+    private void simplifyFraction(int[] arr, int numerator, int denominator) {
+        if(arr == null || arr.length < 2) {
+            return;
+        }
+        int gcd = Calculator.getGreatestCommonDivisor(numerator, denominator);
+        arr[0] = numerator / gcd;  //化简后的分子
+        arr[1] = denominator / gcd;  //化简后的分母
     }
     public List<String> exercisesGenerator(TypeSelector type) {
         Random random = new Random(System.currentTimeMillis());
@@ -184,9 +205,8 @@ public class Generator {
                     if(symbol1 == SymbolType.MUL && symbol2 == SymbolType.MUL) { //连乘查重
                         checkMap(ans1, op3, symbol2);
                         checkMap(op1, Calculator.mulCalculate(op2, op3), symbol1);
-                    } else {
-                        //TODO 三元查重
                     }
+                    //TODO 三元查重
                     if(isNew.add(op1 + symbol1.toString() + op2 + symbol2.toString() + op3)) {
                         exercisesList.add(op1 + symbol1.toString() + op2 + symbol2.toString() + op3);
                     } else {
@@ -233,9 +253,8 @@ public class Generator {
                     if(symbol1 == SymbolType.ADD && symbol2 == SymbolType.ADD) { //连加查重
                         checkMap(ans1, op3, symbol2);
                         checkMap(op1, Calculator.addCalculate(op2, op3), symbol1);
-                    } else {
-                        //TODO 三元查重
                     }
+                    //TODO 三元查重
                     if(isNew.add(op1 + symbol1.toString() + op2 + symbol2.toString() + op3)) {
                         exercisesList.add(op1 + symbol1.toString() + op2 + symbol2.toString() + op3);
                     } else {
@@ -320,10 +339,7 @@ public class Generator {
                 }
                 return true;
             case SUB:
-                if(op1.isLess(op2)) {
-                    return false;
-                }
-                return true;
+                return !op1.isLess(op2);
             case MUL:
                 try {
                     Math.multiplyExact(op1.getNum(), op2.getNum());
@@ -336,34 +352,20 @@ public class Generator {
                 }
                 return true;
             default:
-                if(op1.isLess(op2)) { //NullPointerException
-                    return true;
-                }
-                return false;
+                //NullPointerException
+                return op1.isLess(op2);
         }
     }
     private boolean isDuplicate(NumberType op1, NumberType op2, SymbolType symbolType) {
         switch (symbolType) {
             case ADD:
-                if(addMap.get(op1) == null && addMap.get(op2) == null) {
-                    return false;
-                }
-                return true;
+                return addMap.get(op1) != null || addMap.get(op2) != null;
             case SUB:
-                if(subMap.get(op1) == null) {
-                    return false;
-                }
-                return true;
+                return subMap.get(op1) != null;
             case MUL:
-                if(mulMap.get(op1) == null && mulMap.get(op2) == null) {
-                    return false;
-                }
-                return true;
+                return mulMap.get(op1) != null || mulMap.get(op2) != null;
             default:
-                if(divMap.get(op1) == null) {
-                    return false;
-                }
-                return true;
+                return divMap.get(op1) != null;
         }
     }
 //    public static NumberType calculatorChooser(NumberType op1, NumberType op2, SymbolType symbolType) {

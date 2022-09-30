@@ -43,6 +43,7 @@ public class Entry {
                         answerfile = getOpt.getOptionArg();
                         break;
                     default:
+                        //TODO 提示帮助信息
                         break;
                 }
             }
@@ -54,8 +55,8 @@ public class Entry {
                 FileOperator.writeFile(exercisesList, answersList);
             }
             if(exercisefile != null && answerfile != null) {
-                List<NumberType> correctAns = FileOperator.readExercises("O:\\Exercises.txt");
-                List<NumberType> ans = FileOperator.readAnswers("O:\\Answers.txt");
+                List<NumberType> correctAns = FileOperator.readExercises(exercisefile);
+                List<NumberType> ans = FileOperator.readAnswers(answerfile);
                 if(correctAns == null || ans == null) {
                     System.exit(0);
                 } else {

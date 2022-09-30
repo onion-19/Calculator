@@ -11,6 +11,7 @@ import edu.calculator.utils.Generator;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import java.io.*;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -59,7 +60,8 @@ public class TestUnit {
     public void testWriteFile() {
 //        PropertyConfigurator.configure("log4j.properties");
         Logger LOGGER = Logger.getLogger(Generator.class);
-        Generator generator = new Generator(LOGGER);
+//        Generator generator = new Generator(LOGGER);
+        Generator generator = new Generator();
 //        List<String> list = generator.exercisesGenerator(new TypeSelector(4, 100, 50, 22), 10000);
 //        List<String> ansList = generator.getAnswersList();
 //        FileOperator.writeFile(list, ansList);
@@ -105,7 +107,8 @@ public class TestUnit {
     @Test
     public void testWriteFile2() {
         Logger LOGGER = Logger.getLogger(Generator.class);
-        Generator generator = new Generator(LOGGER);
+//        Generator generator = new Generator(LOGGER);
+        Generator generator = new Generator();
         List<String> list = generator.exercisesGenerator(new TypeSelector(4, 101, 51, 22, 10000));
         List<String> ansList = generator.getAnswersList();
         FileOperator.writeFile(list, ansList);
@@ -161,11 +164,71 @@ public class TestUnit {
         List<NumberType> correctAns = FileOperator.readExercises("O:\\Exercises.txt");
         List<NumberType> ans = FileOperator.readAnswers("O:\\Answers.txt");
         Comparator.compare(correctAns, ans);
-
     }
     @Test
     public void testAbs() {
         System.out.println((double)Math.abs(3 - 4));
+    }
+    private void setArray(int[] array) {
+        array[0] = 9;
+        array[1] = 8;
+        array[2] = 7;
+    }
+    @Test
+    public void testArray() {
+        int[] arr = {2, 3, 7};
+        setArray(arr);
+        for (int i : arr) {
+            System.out.println(":: " + i);
+        }
+    }
+    @Test
+    public void testCalculateWrong() throws IOException {
+//        BufferedReader bread = new BufferedReader(new FileReader(new File("O:\\new\\Grade.txt")));
+        BufferedReader bread = new BufferedReader(new FileReader(new File("O:\\Grade.txt")));
+        String wrongLine = "";
+        bread.readLine();
+        wrongLine = bread.readLine();
+        bread.close();
+        int leftBracketIndex = wrongLine.indexOf("(");
+        wrongLine = wrongLine.substring(leftBracketIndex + 1, wrongLine.length() - 1);
+        String[] wrongNum;
+        Pattern pattern = Pattern.compile("[, ]");
+        Matcher matcher = pattern.matcher(wrongLine);
+        wrongNum = matcher.replaceAll(" ").split("\\s+");
+        bread = new BufferedReader(new FileReader(new File("O:\\new\\Exercises.txt")));
+        BufferedReader b2 = new BufferedReader(new FileReader(new File("O:\\new\\Answers.txt")));
+        String e, a;
+        int w; //转换从Grade.txt里面读出的错题的题号
+        int wrongNumIndex = 0;
+        w = Integer.parseInt(wrongNum[wrongNumIndex++]);
+        BufferedWriter bwrite = new BufferedWriter(new FileWriter(new File("O:\\new\\WrongExercises.txt")));
+        BufferedWriter bw2 = new BufferedWriter(new FileWriter(new File("O:\\new\\WrongAnswers.txt")));
+        for(int i = 1; i <= 10000; i++) {
+            e = bread.readLine();
+            a = b2.readLine();
+            if(i == w && i < 9991) {
+                bwrite.write(e + "\n");
+                bw2.write(a + "\n");
+                w = Integer.parseInt(wrongNum[wrongNumIndex++]);
+            }
+        }
+        bwrite.close();
+        bw2.close();
+    }
+    @Test
+    public void testCompareWrong() throws IOException {
+        List<NumberType> correctAns = FileOperator.readExercises("O:\\new\\Exercises.txt");
+//        List<NumberType> correctAns = FileOperator.readExercises("O:\\new\\WrongExercises.txt");
+//        List<NumberType> ans = FileOperator.readAnswers("O:\\new\\WrongAnswers.txt");
+        List<NumberType> ans = FileOperator.readAnswers("O:\\new\\Answers.txt");
+        Comparator.compare(correctAns, ans);
+
+//        BufferedWriter bwriter = new BufferedWriter(new FileWriter(new File("O:\\CalAns.txt")));
+//        for(int i = 0; i < correctAns.size(); i++) {
+//            bwriter.write((i + 1) + ". " + correctAns.get(i).toString() + "\n");
+//        }
+//        bwriter.close();
     }
 
 

@@ -50,16 +50,20 @@ public class Calculator {
         int preN1 = lcm / op1.getDenominator() * op1.getNumerator();
         int preN2 = lcm / op2.getDenominator() * op2.getNumerator();
         //2）求两个分子（乘以最小公倍数之后）之差与最小公倍数之间的最大公约数
+        int leftInteger = op1.getInteger();
         if(preN1 - preN2 == 0) {
             return new IntegralNumber(op1.getInteger() - op2.getInteger());
         } else if(preN1 - preN2 < 0) {
-            op1.setInteger(op1.getInteger() - 1);
+//            op1.setInteger(op1.getInteger() - 1);
+            leftInteger -= 1;
             preN1 += lcm;
         }
         int gcd = getGreatestCommonDivisor(preN1 - preN2, lcm);
         //3）如果相减后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
+//        return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
+//                op1.getInteger() - op2.getInteger());
         return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
-                op1.getInteger() - op2.getInteger());
+                leftInteger - op2.getInteger());
     }
     public static NumberType mulCalculate(NumberType op1, NumberType op2) {
         if(op1.isInteger() && op2.isInteger()) {
@@ -160,7 +164,16 @@ public class Calculator {
     }
     public static NumberType calculate(NumberType op1, NumberType op2, NumberType op3,
                                        Generator.SymbolType symbol1, Generator.SymbolType symbol2, int bracketsPos) {
-        if(bracketsPos == 0 || bracketsPos == 1) {
+        if(bracketsPos == 0) {
+            if(symbol2 != null && (symbol1 == Generator.SymbolType.ADD || symbol1 == Generator.SymbolType.SUB) &&
+                    (symbol2 == Generator.SymbolType.MUL || symbol2 == Generator.SymbolType.DIV)) {
+                return calculatorChooser(op1, calculatorChooser(op2, op3, symbol2), symbol1);
+            } else if(symbol2 != null){
+                return calculatorChooser(calculatorChooser(op1, op2, symbol1), op3, symbol2);
+            } else {
+                return calculatorChooser(op1, op2, symbol1);
+            }
+        } else if(bracketsPos == 1) {
             if(op3 == null) {
                 return calculatorChooser(op1, op2, symbol1);
             } else {
@@ -169,6 +182,15 @@ public class Calculator {
         } else { //先算右边
             return calculatorChooser(op1, calculatorChooser(op2, op3, symbol2), symbol1);
         }
+//        if(bracketsPos == 0 || bracketsPos == 1) {
+//            if(op3 == null) {
+//                return calculatorChooser(op1, op2, symbol1);
+//            } else {
+//                return calculatorChooser(calculatorChooser(op1, op2, symbol1), op3, symbol2);
+//            }
+//        } else { //先算右边
+//            return calculatorChooser(op1, calculatorChooser(op2, op3, symbol2), symbol1);
+//        }
     }
 
 }

@@ -45,10 +45,10 @@ public class FractionalNumber implements NumberType {
     public boolean isInteger() {
         return false;
     }
-    @Override
-    public void setInteger(int integer) {
-        this.integer = integer;
-    }
+//    @Override
+//    public void setInteger(int integer) {
+//        this.integer = integer;
+//    }
 
     @Override
     public boolean isLess(NumberType num) {

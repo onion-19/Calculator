@@ -54,14 +54,11 @@ public class Calculator {
         if(preN1 - preN2 == 0) {
             return new IntegralNumber(op1.getInteger() - op2.getInteger());
         } else if(preN1 - preN2 < 0) {
-//            op1.setInteger(op1.getInteger() - 1);
             leftInteger -= 1;
             preN1 += lcm;
         }
         int gcd = getGreatestCommonDivisor(preN1 - preN2, lcm);
         //3）如果相减后的分子大于最小公倍数，相减得到剩下的分数部分，化简分数部分；否则直接化简
-//        return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
-//                op1.getInteger() - op2.getInteger());
         return new FractionalNumber((preN1 - preN2) % lcm / gcd, lcm / gcd,
                 leftInteger - op2.getInteger());
     }
@@ -110,26 +107,22 @@ public class Calculator {
             int gcd = getGreatestCommonDivisor(op1.getNum(), op2.getNum());
             return new FractionalNumber(op1.getNum() / gcd, op2.getNum() / gcd);
         } else if(op1.isInteger() && !op2.isInteger()) {
-            //原来的分母
-            int d = op2.getDenominator();
-            //原来的分子（加上整数部分）
-            int n = op2.getNumerator() + op2.getInteger() * d;
+            int d = op2.getDenominator(); //原来的分母
+            int n = op2.getNumerator() + op2.getInteger() * d; //原来的分子（加上整数部分）
             if(n == 1) { //如果原来的分子为1，取倒数后变为整数
                 return mulCalculate(op1, new IntegralNumber(d));
             }
-            return mulCalculate(op1, new FractionalNumber(d % n, n, d / n));//TODO
+            return mulCalculate(op1, new FractionalNumber(d % n, n, d / n));
         } else if(!op1.isInteger() && op2.isInteger()) {
             return mulCalculate(op1, new FractionalNumber(1, op2.getNum()));
         }
         //两个分数相除
-        //op2原来的分母
-        int d = op2.getDenominator();
-        //原来的分子（加上整数部分）
-        int n = op2.getNumerator() + op2.getInteger() * d;
+        int d = op2.getDenominator(); //op2原来的分母
+        int n = op2.getNumerator() + op2.getInteger() * d; //原来的分子（加上整数部分）
         if(n == 1) { //如果原来的分子为1，取倒数后变为整数
             return mulCalculate(op1, new IntegralNumber(d));
         }
-        return mulCalculate(op1, new FractionalNumber(d % n, n, d / n));//TODO
+        return mulCalculate(op1, new FractionalNumber(d % n, n, d / n));
     }
     public static int getLeastCommonMultiple(int d1, int d2) {//分母1、分母2
         return d1 * d2 / getGreatestCommonDivisor(d1, d2);
@@ -182,15 +175,7 @@ public class Calculator {
         } else { //先算右边
             return calculatorChooser(op1, calculatorChooser(op2, op3, symbol2), symbol1);
         }
-//        if(bracketsPos == 0 || bracketsPos == 1) {
-//            if(op3 == null) {
-//                return calculatorChooser(op1, op2, symbol1);
-//            } else {
-//                return calculatorChooser(calculatorChooser(op1, op2, symbol1), op3, symbol2);
-//            }
-//        } else { //先算右边
-//            return calculatorChooser(op1, calculatorChooser(op2, op3, symbol2), symbol1);
-//        }
+
     }
 
 }

@@ -1,9 +1,5 @@
 package edu.calculator.entry;
 
-//import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
-//import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.IllegalArgumentException;
-//import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.MissingOptArgException;
-
 import edu.calculator.entity.NumberType;
 import edu.calculator.entity.TypeSelector;
 import edu.calculator.getopt.GetOpt;

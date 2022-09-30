@@ -10,8 +10,6 @@ public interface NumberType {
     public int getInteger();
     public int getNum();
 
-//    public void setInteger(int integer);
-
     public boolean equals(NumberType num);
     public double getValue();
 }

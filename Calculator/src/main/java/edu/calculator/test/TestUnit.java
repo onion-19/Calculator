@@ -115,7 +115,7 @@ public class TestUnit {
     }
     @Test
     public void testGetNumber() {
-//        System.out.println(FileOperator.getNumber("( 7)）  \n ' 34/100"));
+        System.out.println(FileOperator.getNumber("7)）_——  \n ' 34/100"));
     }
     @Test
     public void testRegex() {

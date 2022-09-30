@@ -43,13 +43,6 @@ public class IntegralNumber implements NumberType {
     }
     @Override
     public boolean equals(NumberType num) {
-//        if(num.isInteger() && this.num == num.getNum()) {
-//            return true;
-//        } else if(!num.isInteger() && num.getInteger() == this.num && num.getNumerator() == 0) {
-//            return true;
-//        } else {
-//            return false;
-//        }
         return getValue() == num.getValue();
     }
     @Override

@@ -12,14 +12,16 @@ public class Comparator {
 
     public static void compare(List<NumberType> correctAns, List<NumberType> ans) {
         for(int i = 0; i < correctAns.size(); i++) {
-//            System.out.println(correctAns.get(i).getValue() - ans.get(i).getValue());
+            if(correctAns.get(i) == null || ans.get(i) == null) {
+                wrongList.add(i + 1);
+                continue;
+            }
             if(Math.abs(correctAns.get(i).getValue() - ans.get(i).getValue()) <= 0.001) {
                 correctList.add(i + 1);
             } else {
                 wrongList.add(i + 1);
             }
         }
-//        correctList.forEach(System.out::println);
         FileOperator.writeGrade(correctList, wrongList);
     }
 

@@ -18,7 +18,6 @@ public class FileOperator {
     public static void writeFile(List<String> exercisesList, List<String> answersList) {
         File efile = new File(EXERCISES_PATH);
         File afile = new File(ANSWERS_PATH);
-        System.out.println("=====================================");
 
         BufferedWriter ewriter = null, awriter = null;
         try {
@@ -48,7 +47,6 @@ public class FileOperator {
     }
     public static void writeGrade(List<Integer> correctList, List<Integer> wrongList) {
         if(correctList == null || wrongList == null) {
-            System.err.println("???????????????????????");
             return;
         }
         File f = new File(GRADE_PATH);
@@ -118,7 +116,6 @@ public class FileOperator {
         }
         return ansList;
     }
-
     //返回计算得到的答案列表
     public static List<NumberType> readExercises(String exercisesFilePath) {
         List<NumberType> ansList = new ArrayList<>();
@@ -139,22 +136,13 @@ public class FileOperator {
             bread = new BufferedReader(new FileReader(f));
             //逐行读取文件
             while(null != (str = bread.readLine())) {
-//                System.out.println("-------test--------------  " + str);
                 strSplit = str.split("\\s+");
                 if(strSplit.length == 5) { //两个操作数，不含括号
-                    NumberType tmp = Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), null,
-                            getSymbol(strSplit[2]), null, 0);
-                    ansList.add(tmp);
-//                    ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), null,
-//                            getSymbol(strSplit[2]), null, 0));
-                    System.out.println("2            " + ansList.get(ansList.size() - 1));
-
-//                } else if(strSplit.length == 7 && (-1 != (bracketsPos = str.indexOf("(")))) { //两个操作数，含括号
+                    ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), null,
+                            getSymbol(strSplit[2]), null, 0));
                 } else if(strSplit.length == 7 && !str.contains("(")) { //三个操作数，不含括号
                     ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), getNumber(strSplit[5]),
                             getSymbol(strSplit[2]), getSymbol(strSplit[4]), 0));
-                    System.out.println("3         " + ansList.get(ansList.size() - 1));
-
                 } else if(strSplit.length == 7 && str.contains("(")) { //三个操作数，含括号
                     bracketsPos = strSplit[1].contains("(") ? 1 : 2;
                     for(int i = 0; i < strSplit.length; i++) {
@@ -163,11 +151,7 @@ public class FileOperator {
                     }
                     ansList.add(Calculator.calculate(getNumber(strSplit[1]), getNumber(strSplit[3]), getNumber(strSplit[5]),
                             getSymbol(strSplit[2]), getSymbol(strSplit[4]), bracketsPos));
-                    System.out.println("4          " + ansList.get(ansList.size() - 1));
-
                 } else { //括号冗余、操作数或运算符数量不符
-                    //TODO
-                    System.out.println("********  " + str);
                     ansList.add(null);
                 }
             }
@@ -184,22 +168,24 @@ public class FileOperator {
         }
         return ansList;
     }
-//    private static NumberType getNumber(String numStr) {
     public static NumberType getNumber(String numStr) {
-        String regex = "[ ()（）\\[\\]【】{}'`/]";
+        if(numStr == null || numStr.trim() == "") {
+            return null;
+        }
+        String regex = "[ ()（）\\[\\]【】{}'`/_——。；、:;]";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(numStr);
-        String[] numStrSplit = matcher.replaceAll(" ").split("\\s+"); //numStrSplit[0]为空
-//        System.out.println("single exercise length: " + numStr + " : " + numStrSplit.length);
+        String[] numStrSplit = matcher.replaceAll(" ").split("\\s+");
         if(numStr.contains("'") || numStr.contains("`")) {
             return new FractionalNumber(Integer.parseInt(numStrSplit[1]), Integer.parseInt(numStrSplit[2]), Integer.parseInt(numStrSplit[0]));
-//            return new FractionalNumber(Integer.parseInt(numStrSplit[2]), Integer.parseInt(numStrSplit[3]), Integer.parseInt(numStrSplit[1]));
         } else if(numStr.contains("/")) {
             return new FractionalNumber(Integer.parseInt(numStrSplit[0]), Integer.parseInt(numStrSplit[1]), 0);
-//            return new FractionalNumber(Integer.parseInt(numStrSplit[1]), Integer.parseInt(numStrSplit[2]), 0);
         } else {
-            return new IntegralNumber(Integer.parseInt(numStrSplit[0]));
-//            return new IntegralNumber(Integer.parseInt(numStrSplit[1]));
+            try {
+                return new IntegralNumber(Integer.parseInt(numStrSplit[0]));
+            } catch(NumberFormatException e) {
+                return null;
+            }
         }
     }
     private static Generator.SymbolType getSymbol(String symbol) {
